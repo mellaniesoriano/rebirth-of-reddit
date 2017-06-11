@@ -25,9 +25,10 @@ console.log('sanity check');
 
 
       // main data : response.data.children
-      for ( var i = 1; i < response.data.children.length; i++ ) {
+      for ( var i = 1; i < 5; i++ ) {
         // console.log(response.data.children[i].data);
         var redditData = response.data.children[i].data;
+        // console.log(redditData.preview.images[0].source.url)
 
         var postBox = document.createElement('div');
         postBox.className = 'postBox';
@@ -42,7 +43,7 @@ console.log('sanity check');
         postBox.appendChild(imgBox);
 
         makeElems('a', 'title', redditData.title, infoBox, 'href', redditData.url);
-        makeElems('div', 'author', redditData.author, infoBox);
+        makeElems('div', 'author', 'by ' + redditData.author, infoBox);
         makeElems('div', 'time', redditData.created_utc, infoBox);
 
         for ( var key1 in redditData.media ) {
@@ -59,11 +60,7 @@ console.log('sanity check');
         var thumbnail = document.createElement('img');
         thumbnail.className = 'thumbnailImg';
         thumbnail.src = redditData.thumbnail;
-        thumbnail.setAttribute('href', redditData.url);
         imgBox.appendChild(thumbnail);
-
-
-
 
       }// data.children for loop
 
