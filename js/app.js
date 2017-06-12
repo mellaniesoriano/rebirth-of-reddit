@@ -1,4 +1,4 @@
-console.log('sanity check');
+/*jshint esversion: 6 */
 
 (function() {
   var mainBody = document.getElementsByTagName('body')[0];
@@ -12,64 +12,44 @@ console.log('sanity check');
 
     function getRedditData() {
       var response = JSON.parse(this.responseText);
-      // console.log(response.data);
-      // console.log(response.data.children[1].data.preview.images.length);
 
-      function makeElems(type, className, content, appendTarget, name, value) {
-        var newElement = document.createElement(type);
-        newElement.className = className;
-        newElement.setAttribute(name, value);
-        newElement.innerHTML = content;
-        appendTarget.appendChild(newElement);
-      }
-
-
-      // main data : response.data.children
       for ( var i = 1; i < 5; i++ ) {
-        // console.log(response.data.children[i].data);
         var redditData = response.data.children[i].data;
-        // console.log(redditData.preview.images[0].source.url)
+        if ( redditData.url.match(/\.(jpeg|jpg|gif|png)$/) === null ) {
+          continue;
+        }
 
         var postBox = document.createElement('div');
         postBox.className = 'postBox';
         mainContainer.appendChild(postBox);
 
-        var infoBox = document.createElement('div');
-        infoBox.className = 'infoBox';
-        postBox.appendChild(infoBox);
-
         var imgBox = document.createElement('div');
         imgBox.className = 'imgBox';
         postBox.appendChild(imgBox);
 
-        makeElems('a', 'title', redditData.title, infoBox, 'href', redditData.url);
-        makeElems('div', 'author', 'by ' + redditData.author, infoBox);
-        makeElems('div', 'time', redditData.created_utc, infoBox);
+        var images = document.createElement('img');
+        images.className = 'images';
+        images.src = redditData.url;
+        postBox.appendChild(images);
 
-        for ( var key1 in redditData.media ) {
-          for ( var key2 in redditData.media[key1] ) {
-            if ( key2 === 'description' ) {
-              var description = document.createElement('div');
-              description.id = 'description';
-              description.innerHTML = redditData.media[key1][key2];
-              infoBox.appendChild(description);
-            }
-          }
-        }
+        var title = document.createElement('a');
+        title.className = 'title';
+        title.innerHTML = redditData.title;
+        title.setAttribute('href', redditData.url);
+        postBox.appendChild(title);
 
-        var thumbnail = document.createElement('img');
-        thumbnail.className = 'thumbnailImg';
-        thumbnail.src = redditData.thumbnail;
-        imgBox.appendChild(thumbnail);
+        var decodeDate = new Date(redditData.created_utc);
+        var date = decodeDate.toLocaleDateString();
 
-      }// data.children for loop
+        var postInfo = document.createElement('p');
+        postInfo.className = 'postInfo';
+        postInfo.innerHTML = `by ${redditData.author} &centerdot; ${date} &centerdot; ${redditData.ups} upvotes`;
+        postBox.appendChild(postInfo);
 
-      // for ( var k = 0; k < response.data.children.data.media.length)
-
+      }
     } // getRedditData
   } // createRequest
 
-  createRequest('https://www.reddit.com/r/ChildrenFallingOver.json');
-  // createRequest('https://www.reddit.com/r/ChildrenFallingOver.json', 'thumbnail');
+  createRequest('https://www.reddit.com/r/travel.json');
 
 })();
