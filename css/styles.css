@@ -1,5 +1,6 @@
 body {
   background-image: url('/assets/bg.jpg');
+  background-color: black;
   display: flex;
   flex-direction: column;
   justify-content: center; align-items: center;
@@ -12,7 +13,7 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   max-width: 700px;
-  flex: 1 0 40%;
+
 
 }
 
@@ -42,13 +43,15 @@ body {
   background-color: white;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
   box-sizing: border-box;
   background-color: white;
   margin: 8px;
   padding: 10px;
   max-width: 300px;
+  min-width: 200px;
+  height: 380px;
 }
 
 .title {
@@ -60,7 +63,7 @@ body {
 
 .images {
   width: 100%;
-  height: 250px;
+  height: 200px;
   object-fit: cover;
 }
 
@@ -70,4 +73,18 @@ body {
   justify-content: center;
   align-items: center;
 
+}
+
+.postInfo {
+  font-size: 12px;
+}
+
+.title {
+  overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-box-orient: vertical;
+   -webkit-line-clamp: 2; /* number of lines to show */
+   line-height: 1.5;
+   max-height: 1*2;
 }
