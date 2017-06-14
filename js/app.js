@@ -1,57 +1,56 @@
 /*jshint esversion: 6 */
 
-  (function() {
+var mainBody = document.getElementsByTagName('body')[0];
+var mainContainer = document.querySelector('#container');
 
-    function createRequest(url, listener) {
-    var oReq = new XMLHttpRequest();
-    oReq.addEventListener('load', listener);
-    oReq.open('GET', url);
-    oReq.send();
-  }
+function createRequest(url, listener) {
+  var oReq = new XMLHttpRequest();
+  oReq.addEventListener('load', listener);
+  oReq.open('GET', url);
+  oReq.send();
+}
 
-  var mainBody = document.getElementsByTagName('body')[0];
-  var mainContainer = document.querySelector('#container');
+function getRedditData() {
+  var response = JSON.parse(this.responseText);
 
-  function getRedditData() {
-    var response = JSON.parse(this.responseText);
+  for ( var i = 0; i < response.data.children.length; i++ ) {
+    var redditData = response.data.children[i].data;
 
-    for ( var i = 0; i < response.data.children.length; i++ ) {
-      var redditData = response.data.children[i].data;
-
-      if ( redditData.url.match(/\.(jpeg|jpg|gif|png)$/) === null ) {
+    if ( redditData.url.match(/\.(jpeg|jpg|gif|png)$/) === null ) {
         continue;
-      }
+    }
 
-      var postBox = document.createElement('div');
-      postBox.className = 'postBox';
-      mainContainer.appendChild(postBox);
+    // console.log(`https://www.reddit.com/${redditData.permalink}`)
 
-      var imgBox = document.createElement('div');
-      imgBox.className = 'imgBox';
-      postBox.appendChild(imgBox);
+    var postBox = document.createElement('a');
+    postBox.className = 'postBox';
+    postBox.setAttribute('href', `https://www.reddit.com/${redditData.permalink}`);
+    mainContainer.appendChild(postBox);
 
-      var images = document.createElement('img');
-      images.className = 'images';
-      images.src = redditData.url;
-      imgBox.appendChild(images);
+    var imgBox = document.createElement('div');
+    imgBox.className = 'imgBox';
+    postBox.appendChild(imgBox);
 
-      var title = document.createElement('a');
-      title.className = 'title';
-      title.innerHTML = redditData.title;
-      title.setAttribute('href', redditData.url);
-      postBox.appendChild(title);
+    var images = document.createElement('img');
+    images.className = 'images';
+    images.src = redditData.url;
+    imgBox.appendChild(images);
 
-      var decodeDate = new Date(redditData.created_utc * 1000);
-      var date = decodeDate.toLocaleDateString();
+    var title = document.createElement('a');
+    title.className = 'title';
+    title.innerHTML = redditData.title;
+    title.setAttribute('href', `https://www.reddit.com/${redditData.permalink}`);
+    postBox.appendChild(title);
+    var decodeDate = new Date(redditData.created_utc * 1000);
+    var date = decodeDate.toLocaleDateString();
 
-      var postInfo = document.createElement('p');
-      postInfo.className = 'postInfo';
-      postInfo.innerHTML = `by ${redditData.author}, ${date}, ${redditData.ups} upvotes`;
-      postBox.appendChild(postInfo);
+    var postInfo = document.createElement('p');
+    postInfo.className = 'postInfo';
+    postInfo.innerHTML = `by ${redditData.author}, ${date}, ${redditData.ups} upvotes`;
+    postBox.appendChild(postInfo);
 
-    } // for loop
-
-  } // getRedditData
+    }
+  }
 
   document.querySelector('#randomLink').addEventListener('click', () => {
     mainContainer.innerHTML = '';
@@ -71,5 +70,9 @@
     createRequest('https://www.reddit.com/r/Castleporn.json', getRedditData);
   });
 
+  document.querySelector('#getAppLink').addEventListener('click', () => {
+    mainContainer.innerHTML = '';
+    createRequest('https://www.reddit.com/r/Castleporn.json', getRedditData);
+  });
+
   createRequest('https://www.reddit.com/r/StreetArt.json', getRedditData);
-})();
